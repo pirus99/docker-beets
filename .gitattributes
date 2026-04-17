@@ -1,6 +1,15 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Force LF line endings for shell scripts and config files used in Linux containers
+*.sh text eol=lf
+root/custom-cont-init.d/* text eol=lf
+root/custom-services.d/* text eol=lf
+root/etc/s6-overlay/**/* text eol=lf
+root/defaults/* text eol=lf
+docker-compose.yml text eol=lf
+.env* text eol=lf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 
