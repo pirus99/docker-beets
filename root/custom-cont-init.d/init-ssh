@@ -1,0 +1,31 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+SSH_PORT="${SSH_PORT:-2222}"
+
+echo "**** configuring openssh-server ****"
+
+# generate host keys if missing
+ssh-keygen -A
+
+# configure sshd
+sed -i "s/^#\?Port .*/Port ${SSH_PORT}/" /etc/ssh/sshd_config
+sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# set root password
+if [ -n "${SSH_PASSWORD}" ]; then
+    echo "root:${SSH_PASSWORD}" | chpasswd
+    echo "**** root password set ****"
+else
+    echo "**** WARNING: SSH_PASSWORD not set, SSH login will not work ****"
+fi
+
+# configure environment for SSH sessions
+echo 'export PATH="/lsiopy/bin:$PATH"' >> /root/.profile
+echo 'export BEETSDIR="/config"' >> /root/.profile
+echo 'export FPCALC="/usr/bin/fpcalc"' >> /root/.profile
+echo 'export HOME="/config"' >> /root/.profile
+echo 'export EDITOR="nano"' >> /root/.profile
+
+echo "**** SSH environment configured ****"

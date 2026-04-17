@@ -28,6 +28,7 @@ RUN \
     python3-dev && \
   echo "**** install runtime packages ****" && \
   apk add --no-cache \
+    openssh-server \
     chromaprint \
     expat \
     ffmpeg \
@@ -105,7 +106,9 @@ HOME="/config"
 
 # copy local files
 COPY root/ /
+RUN chmod +x /custom-cont-init.d/init-ssh /custom-services.d/sshd
 
 # ports and volumes
 EXPOSE 8337
+EXPOSE 2222
 VOLUME /config
